@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -11,8 +11,6 @@ namespace rater_api.Data
         public ApplicationDbContext()
         {
         }
-
-        public DbSet <SchoolProgram> SchoolPrograms { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -33,13 +31,26 @@ namespace rater_api.Data
             OnModelCreatingPartial(modelBuilder);
             modelBuilder.Entity<SchoolProgram>().HasData(
                 new SchoolProgram {
-                    Id = "qwiqwlkht",
-                    ProgramName = "Full Stack Web Development",
-                    ProgramDesc = "This is the program for web full stack"
+                    SchoolProgramId = 1,
+                    ProgramName = "FSWD",
+                    ProgramDesc = "This is FSWD"
+                }
+            );
+            modelBuilder.Entity<ProgramRate>().HasData(
+                new ProgramRate {
+                    ProgramRateId = 1,
+                    ProgramReview = "FSWD sucks",
+                    RateNumber = 1,
+                    Created_At = new DateTime(),
+                    SchoolProgramId = 1
                 }
             );
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public DbSet<rater_api.Models.SchoolProgram> SchoolProgram { get; set; }
+
+        public DbSet<rater_api.Models.ProgramRate> ProgramRate { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 using rater_api.Data;
 
 
@@ -14,12 +15,15 @@ var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          builder.WithOrigins("*")
-                          .AllowAnyHeader()
-                          .WithExposedHeaders("Content-Type");
-                      });
+        builder =>
+        {
+            builder.WithOrigins("*")
+            .AllowAnyHeader()
+            .WithExposedHeaders("Content-Type")
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+            .WithHeaders(HeaderNames.ContentType, "x-custom-header");
+    });
 });
 
 
@@ -46,5 +50,4 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

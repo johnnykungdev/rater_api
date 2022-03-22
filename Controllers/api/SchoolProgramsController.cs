@@ -14,7 +14,6 @@ namespace rater_api.Controllers.api
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors]
     public class SchoolProgramsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -26,16 +25,16 @@ namespace rater_api.Controllers.api
 
         // GET: api/SchoolPrograms
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SchoolProgram>>> GetSchoolPrograms()
+        public async Task<ActionResult<IEnumerable<SchoolProgram>>> GetSchoolProgram()
         {
-            return await _context.SchoolPrograms.ToListAsync();
+            return await _context.SchoolProgram.ToListAsync();
         }
 
         // GET: api/SchoolPrograms/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SchoolProgram>> GetSchoolProgram(string id)
+        public async Task<ActionResult<SchoolProgram>> GetSchoolProgram(int id)
         {
-            var schoolProgram = await _context.SchoolPrograms.FindAsync(id);
+            var schoolProgram = await _context.SchoolProgram.FindAsync(id);
 
             if (schoolProgram == null)
             {
@@ -48,9 +47,9 @@ namespace rater_api.Controllers.api
         // PUT: api/SchoolPrograms/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSchoolProgram(string id, SchoolProgram schoolProgram)
+        public async Task<IActionResult> PutSchoolProgram(int id, SchoolProgram schoolProgram)
         {
-            if (id != schoolProgram.Id)
+            if (id != schoolProgram.SchoolProgramId)
             {
                 return BadRequest();
             }
@@ -81,45 +80,37 @@ namespace rater_api.Controllers.api
         [HttpPost]
         public async Task<ActionResult<SchoolProgram>> PostSchoolProgram(SchoolProgram schoolProgram)
         {
-            _context.SchoolPrograms.Add(schoolProgram);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (SchoolProgramExists(schoolProgram.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.SchoolProgram.Add(schoolProgram);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSchoolProgram", new { id = schoolProgram.Id }, schoolProgram);
+            return CreatedAtAction("GetSchoolProgram", new { id = schoolProgram.SchoolProgramId }, schoolProgram);
         }
 
         // DELETE: api/SchoolPrograms/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSchoolProgram(string id)
+        public async Task<IActionResult> DeleteSchoolProgram(int id)
         {
-            var schoolProgram = await _context.SchoolPrograms.FindAsync(id);
+            var schoolProgram = await _context.SchoolProgram.FindAsync(id);
             if (schoolProgram == null)
             {
                 return NotFound();
             }
 
-            _context.SchoolPrograms.Remove(schoolProgram);
+            _context.SchoolProgram.Remove(schoolProgram);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SchoolProgramExists(string id)
+        private bool SchoolProgramExists(int id)
         {
-            return _context.SchoolPrograms.Any(e => e.Id == id);
+            return _context.SchoolProgram.Any(e => e.SchoolProgramId == id);
+        }
+
+        //Get: api/schoolprogrms/:schoolprogramsId/ProgramRates
+        [HttpGet("{schoolprogramsId}/programrates")]
+        public async Task<ActionResult<IEnumerable<ProgramRate>>> GetProgramRatesBySchoolProgramId(int schoolprogramsId) {
+            return await _context.ProgramRate.Where(s => s.SchoolProgramId == schoolprogramsId).ToListAsync();
         }
     }
 }
