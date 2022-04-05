@@ -11,6 +11,6 @@ There are other review websites/platforms where students share their experiences
 
 
 ## After downloading the code ##
-Run this comment: `dotnet watch run`
+Run this comment: 1)`dotnet build` 2)`dotnet watch run`
 
 Hope you like our app 😃
